@@ -17,8 +17,10 @@ declare global {
         name: string;
       };
     }
-  }
-}
+  } 
+} 
+// Declaração de extensão do Express para adicionar a propriedade user ao Request
+// Assim, podemos acessar o usuário autenticado em qualquer rota que tenha o middleware de autenticação
 
 export const authenticate: RequestHandler = async (
   req: Request,
