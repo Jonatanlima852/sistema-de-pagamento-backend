@@ -1,6 +1,7 @@
 import { userSwaggerDocs } from '../docs/user.swagger';
 import { accountSwaggerDocs } from '../docs/account.swagger';
 import { categorySwaggerDocs } from '../docs/category.swagger';
+import { transactionSwaggerDocs } from '../docs/transactions.swagger';
 
 export const swaggerOptions = {
   definition: {
@@ -23,6 +24,7 @@ export const swaggerOptions = {
       ...userSwaggerDocs,
       ...accountSwaggerDocs,
       ...categorySwaggerDocs,
+      ...transactionSwaggerDocs,
     }
   },
   apis: []
