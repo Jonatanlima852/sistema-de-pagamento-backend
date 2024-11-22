@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '../utils/AppError';
 
+
 const prisma = new PrismaClient();
 
 interface CreateTransactionData {
@@ -49,6 +50,15 @@ export class TransactionsService {
         createdAt: true,
         updatedAt: true,
       },
+    });
+
+    const newBalance = (data.type === 'INCOME')
+        ? Number(account.balance) + data.amount
+        : Number(account.balance) - data.amount;
+
+    await prisma.account.update({
+        where: { id: data.accountId },
+        data: { balance: newBalance },
     });
 
     return transaction;
