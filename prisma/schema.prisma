@@ -38,11 +38,13 @@ model Account {
 }
 
 enum AccountType {
-  CHECKING
-  SAVINGS
+  DEBIT_CARD
+  SAVING
   CREDIT_CARD
   CASH
   INVESTMENT
+  BUSINESS_CARD
+  OTHER
 }
 
 model Category {
