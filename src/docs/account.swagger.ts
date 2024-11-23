@@ -18,7 +18,7 @@ export const accountSwaggerDocs = {
                 },
                 type: {
                   type: 'string',
-                  enum: ['CHECKING', 'SAVINGS', 'CREDIT_CARD', 'CASH', 'INVESTMENT'],
+                  enum: ['DEBIT_CARD', 'SAVING', 'CREDIT_CARD', 'CASH', 'INVESTMENT', 'BUSINESS_CARD', 'OTHER'],
                   description: 'Tipo da conta'
                 },
                 balance: {
@@ -146,7 +146,7 @@ export const accountSwaggerDocs = {
                 },
                 type: {
                   type: 'string',
-                  enum: ['CHECKING', 'SAVINGS', 'CREDIT_CARD', 'CASH', 'INVESTMENT'],
+                  enum: ['DEBIT_CARD', 'SAVING', 'CREDIT_CARD', 'CASH', 'INVESTMENT', 'BUSINESS_CARD', 'OTHER'],
                   description: 'Tipo da conta'
                 },
                 balance: {

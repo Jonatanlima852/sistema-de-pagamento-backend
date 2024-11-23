@@ -5,7 +5,7 @@ export const createAccountValidator = [
     .notEmpty()
     .withMessage('Nome da conta é obrigatório'),
   body('type')
-    .isIn(['CHECKING', 'SAVINGS', 'CREDIT_CARD', 'CASH', 'INVESTMENT'])
+    .isIn(['DEBIT_CARD', 'SAVING', 'CREDIT_CARD', 'CASH', 'INVESTMENT', 'BUSINESS_CARD', 'OTHER'])
     .withMessage('Tipo de conta inválido'),
   body('balance')
     .isDecimal()
@@ -19,7 +19,7 @@ export const updateAccountValidator = [
     .withMessage('Nome da conta é obrigatório'),
   body('type')
     .optional()
-    .isIn(['CHECKING', 'SAVINGS', 'CREDIT_CARD', 'CASH', 'INVESTMENT'])
+    .isIn(['DEBIT_CARD', 'SAVING', 'CREDIT_CARD', 'CASH', 'INVESTMENT', 'BUSINESS_CARD', 'OTHER'])
     .withMessage('Tipo de conta inválido'),
   body('balance')
     .optional()
