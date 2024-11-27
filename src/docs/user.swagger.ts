@@ -122,6 +122,65 @@ export const userSwaggerDocs = {
           }
         }
       }
+    },
+    put: {
+      tags: ['Users'],
+      summary: 'Atualizar dados do usuário',
+      security: [{ bearerAuth: [] }],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                email: {
+                  type: 'string',
+                  format: 'email',
+                  description: 'Novo email do usuário'
+                },
+                password: {
+                  type: 'string',
+                  format: 'password',
+                  description: 'Nova senha do usuário'
+                },
+                name: {
+                  type: 'string',
+                  description: 'Novo nome do usuário'
+                }
+              }
+            }
+          }
+        }
+      },
+      responses: {
+        200: {
+          description: 'Usuário atualizado com sucesso',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  email: { type: 'string' },
+                  name: { type: 'string' },
+                  createdAt: { type: 'string' }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    delete: {
+      tags: ['Users'],
+      summary: 'Deletar usuário',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        204: {
+          description: 'Usuário deletado com sucesso'
+        }
+      }
     }
   }
 }; 

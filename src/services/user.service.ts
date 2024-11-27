@@ -16,6 +16,12 @@ interface LoginData {
   password: string;
 }
 
+interface UpdateUserData {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
 export class UserService {
   async createUser(data: CreateUserData) {
     const existingUser = await prisma.user.findUnique({
@@ -73,5 +79,60 @@ export class UserService {
       },
       token,
     };
+  }
+
+  async updateUser(userId: number, data: UpdateUserData) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new AppError('Usuário não encontrado', 404);
+    }
+
+    if (data.email && data.email !== user.email) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email: data.email },
+      });
+
+      if (existingUser) {
+        throw new AppError('Email já está em uso', 400);
+      }
+    }
+
+    let hashedPassword = undefined;
+    if (data.password) {
+      hashedPassword = await bcrypt.hash(data.password, 10);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...data,
+        password: hashedPassword || undefined,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        createdAt: true,
+      },
+    });
+
+    return updatedUser;
+  }
+
+  async deleteUser(userId: number) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new AppError('Usuário não encontrado', 404);
+    }
+
+    await prisma.user.delete({
+      where: { id: userId },
+    });
   }
 } 

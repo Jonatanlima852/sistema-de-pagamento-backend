@@ -29,4 +29,24 @@ export class UserController {
       next(error);
     }
   }
+
+  async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = Number(req.user?.id);
+      const updatedUser = await userService.updateUser(userId, req.body);
+      res.json(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = Number(req.user?.id);
+      await userService.deleteUser(userId);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
 } 

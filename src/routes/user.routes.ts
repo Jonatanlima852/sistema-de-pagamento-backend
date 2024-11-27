@@ -27,4 +27,16 @@ router.get(
   userController.getProfile.bind(userController)
 );
 
+router.put(
+  '/me',
+  authenticate,
+  userController.updateUser.bind(userController)
+);
+
+router.delete(
+  '/me',
+  authenticate,
+  userController.deleteUser.bind(userController)
+);
+
 export default router;
