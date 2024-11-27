@@ -9,6 +9,7 @@
     "start": "node dist/server.js",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
+    "migrate:start": "npm run prisma:migrate && npm run start",
     "test": "jest --config src/jest.config.ts --runInBand",
     "test:accounts": "jest src/__tests__/accounts.test.ts --config src/jest.config.ts",
     "test:users": "jest src/__tests__/user.test.ts --config src/jest.config.ts",
