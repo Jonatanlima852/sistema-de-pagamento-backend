@@ -109,15 +109,23 @@ export class TransactionsService {
   }
 
   async updateTransaction(id: number, userId: number, data: UpdateTransactionData) {
-    const transaction = await prisma.transaction.updateMany({
+    const transaction = await prisma.transaction.update({
       where: { id, userId },
       data,
+      select: {
+        id: true,
+        description: true,
+        amount: true,
+        date: true,
+        type: true,
+        isRecurring: true,
+        categoryId: true,
+        accountId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
-
-    if (transaction.count === 0) {
-      throw new AppError('Transação não encontrada', 404);
-    }
-
+    
     return transaction;
   }
 

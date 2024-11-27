@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AccountController } from '../controllers/account.controller';
+import { AccountController } from '../controllers/accounts.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 import { createAccountValidator, updateAccountValidator } from '../validators/account.validator';
 import { validateRequest } from '../middlewares/validator.middleware';

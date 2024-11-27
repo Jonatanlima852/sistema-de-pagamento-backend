@@ -46,14 +46,16 @@ export class CategoriesService {
   }
 
   async updateCategory(id: number, userId: number, data: UpdateCategoryData) {
-    const category = await prisma.category.updateMany({
-      where: { id, userId },
+    const category = await prisma.category.update({
+      where: { id },
       data,
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        userId: true,
+      },
     });
-
-    if (category.count === 0) {
-      throw new AppError('Categoria não encontrada', 404);
-    }
 
     return category;
   }
