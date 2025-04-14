@@ -7,6 +7,7 @@ import userRoutes from './routes/user.routes';
 import accountRoutes from './routes/accounts.routes';
 import categoryRoutes from './routes/categories.routes';
 import transactionsRoutes from './routes/transactions.routes';
+import tagRoutes from './routes/tags.routes';
 import { swaggerOptions } from './config/swagger.config';
 import { errorHandler } from './middlewares/error.middleware';
 
@@ -23,6 +24,7 @@ app.use('/api', userRoutes); //Middleware de rotas
 app.use('/api', accountRoutes); 
 app.use('/api', categoryRoutes); 
 app.use('/api', transactionsRoutes); 
+app.use('/api', tagRoutes); 
 app.use(errorHandler);   // Middleware de tratamento de erros
 
 

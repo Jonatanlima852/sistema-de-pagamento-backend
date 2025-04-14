@@ -13,6 +13,7 @@ interface CreateTransactionData {
   categoryId: number;
   accountId: number;
   userId: number;
+  tagIds?: number[];
 }
 
 interface UpdateTransactionData {
@@ -23,6 +24,7 @@ interface UpdateTransactionData {
   isRecurring?: boolean;
   categoryId?: number;
   accountId?: number;
+  tagIds?: number[];
 }
 
 export class TransactionsService {
@@ -36,8 +38,35 @@ export class TransactionsService {
       throw new AppError('Conta não encontrada', 404);
     }
 
+    // Extrair tagIds da data
+    const { tagIds, ...transactionData } = data;
+
+    // Verificar se as tags existem e pertencem ao usuário
+    if (tagIds && tagIds.length > 0) {
+      const tags = await prisma.tag.findMany({
+        where: { 
+          id: { in: tagIds },
+          userId: data.userId 
+        }
+      });
+
+      if (tags.length !== tagIds.length) {
+        throw new AppError('Uma ou mais tags não foram encontradas', 404);
+      }
+    }
+
+    // Criar a transação com as conexões de tags
     const transaction = await prisma.transaction.create({
-      data,
+      data: {
+        ...transactionData,
+        tags: tagIds && tagIds.length > 0 
+          ? {
+              create: tagIds.map(tagId => ({
+                tag: { connect: { id: tagId } }
+              }))
+            }
+          : undefined
+      },
       select: {
         id: true,
         description: true,
@@ -49,6 +78,16 @@ export class TransactionsService {
         accountId: true,
         createdAt: true,
         updatedAt: true,
+        tags: {
+          select: {
+            tag: {
+              select: {
+                id: true, 
+                name: true
+              }
+            }
+          }
+        }
       },
     });
 
@@ -61,7 +100,14 @@ export class TransactionsService {
         data: { balance: newBalance },
     });
 
-    return transaction;
+    // Transformando o resultado para um formato mais limpo
+    return {
+      ...transaction,
+      tags: transaction.tags.map(tagRelation => ({
+        id: tagRelation.tag.id,
+        name: tagRelation.tag.name,
+      })),
+    };
   }
 
   async getTransactions(userId: number) {
@@ -78,10 +124,27 @@ export class TransactionsService {
         accountId: true,
         createdAt: true,
         updatedAt: true,
+        tags: {
+          select: {
+            tag: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
       },
     });
 
-    return transactions;
+    // Transformando o resultado para um formato mais limpo
+    return transactions.map(t => ({
+      ...t,
+      tags: t.tags.map(tagRelation => ({
+        id: tagRelation.tag.id,
+        name: tagRelation.tag.name,
+      })),
+    }));
   }
 
   async getTransaction(id: number, userId: number) {
@@ -98,6 +161,16 @@ export class TransactionsService {
         accountId: true,
         createdAt: true,
         updatedAt: true,
+        tags: {
+          select: {
+            tag: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
       },
     });
 
@@ -105,28 +178,104 @@ export class TransactionsService {
       throw new AppError('Transação não encontrada', 404);
     }
 
-    return transaction;
+    // Transformando o resultado para um formato mais limpo
+    return {
+      ...transaction,
+      tags: transaction.tags.map(tagRelation => ({
+        id: tagRelation.tag.id,
+        name: tagRelation.tag.name,
+      })),
+    };
   }
 
   async updateTransaction(id: number, userId: number, data: UpdateTransactionData) {
-    const transaction = await prisma.transaction.update({
+    // Extrair tagIds da data
+    const { tagIds, ...transactionData } = data;
+
+    // Verificar se as tags existem e pertencem ao usuário
+    if (tagIds && tagIds.length > 0) {
+      const tags = await prisma.tag.findMany({
+        where: { 
+          id: { in: tagIds },
+          userId 
+        }
+      });
+
+      if (tags.length !== tagIds.length) {
+        throw new AppError('Uma ou mais tags não foram encontradas', 404);
+      }
+    }
+
+    // Primeiro verificar se a transação existe
+    const existingTransaction = await prisma.transaction.findFirst({
       where: { id, userId },
-      data,
-      select: {
-        id: true,
-        description: true,
-        amount: true,
-        date: true,
-        type: true,
-        isRecurring: true,
-        categoryId: true,
-        accountId: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+    });
+
+    if (!existingTransaction) {
+      throw new AppError('Transação não encontrada', 404);
+    }
+
+    // Atualizar a transação
+    const transaction = await prisma.$transaction(async (prisma) => {
+      // Se tagIds for fornecido, atualizar as relações de tags
+      if (tagIds !== undefined) {
+        // Primeiro, remover todas as tags existentes
+        await prisma.tagsOnTransactions.deleteMany({
+          where: { transactionId: id }
+        });
+
+        // Então, adicionar as novas tags
+        if (tagIds.length > 0) {
+          await Promise.all(
+            tagIds.map(tagId => 
+              prisma.tagsOnTransactions.create({
+                data: {
+                  transactionId: id,
+                  tagId
+                }
+              })
+            )
+          );
+        }
+      }
+
+      // Atualizar os dados da transação
+      return prisma.transaction.update({
+        where: { id },
+        data: transactionData,
+        select: {
+          id: true,
+          description: true,
+          amount: true,
+          date: true,
+          type: true,
+          isRecurring: true,
+          categoryId: true,
+          accountId: true,
+          createdAt: true,
+          updatedAt: true,
+          tags: {
+            select: {
+              tag: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          }
+        },
+      });
     });
     
-    return transaction;
+    // Transformando o resultado para um formato mais limpo
+    return {
+      ...transaction,
+      tags: transaction.tags.map(tagRelation => ({
+        id: tagRelation.tag.id,
+        name: tagRelation.tag.name,
+      })),
+    };
   }
 
   async deleteTransaction(id: number, userId: number) {

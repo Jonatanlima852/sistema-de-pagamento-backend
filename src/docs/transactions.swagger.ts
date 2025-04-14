@@ -41,6 +41,13 @@ export const transactionSwaggerDocs = {
                   accountId: {
                     type: 'integer',
                     description: 'ID da conta'
+                  },
+                  tagIds: {
+                    type: 'array',
+                    items: {
+                      type: 'integer'
+                    },
+                    description: 'IDs das tags (opcional)'
                   }
                 }
               }
@@ -64,7 +71,17 @@ export const transactionSwaggerDocs = {
                     categoryId: { type: 'number' },
                     accountId: { type: 'number' },
                     createdAt: { type: 'string' },
-                    updatedAt: { type: 'string' }
+                    updatedAt: { type: 'string' },
+                    tags: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'number' },
+                          name: { type: 'string' }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -95,7 +112,17 @@ export const transactionSwaggerDocs = {
                       categoryId: { type: 'number' },
                       accountId: { type: 'number' },
                       createdAt: { type: 'string' },
-                      updatedAt: { type: 'string' }
+                      updatedAt: { type: 'string' },
+                      tags: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'number' },
+                            name: { type: 'string' }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -138,7 +165,17 @@ export const transactionSwaggerDocs = {
                     categoryId: { type: 'number' },
                     accountId: { type: 'number' },
                     createdAt: { type: 'string' },
-                    updatedAt: { type: 'string' }
+                    updatedAt: { type: 'string' },
+                    tags: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'number' },
+                          name: { type: 'string' }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -200,6 +237,13 @@ export const transactionSwaggerDocs = {
                   accountId: {
                     type: 'integer',
                     description: 'ID da conta'
+                  },
+                  tagIds: {
+                    type: 'array',
+                    items: {
+                      type: 'integer'
+                    },
+                    description: 'IDs das tags para atualizar (opcional)'
                   }
                 }
               }
@@ -222,7 +266,17 @@ export const transactionSwaggerDocs = {
                     isRecurring: { type: 'boolean' },
                     categoryId: { type: 'number' },
                     accountId: { type: 'number' },
-                    updatedAt: { type: 'string' }
+                    updatedAt: { type: 'string' },
+                    tags: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'number' },
+                          name: { type: 'string' }
+                        }
+                      }
+                    }
                   }
                 }
               }

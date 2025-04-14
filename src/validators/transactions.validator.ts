@@ -22,6 +22,15 @@ export const createTransactionValidator = [
   body('accountId')
     .isInt()
     .withMessage('O ID da conta é obrigatório e deve ser um número inteiro'),
+  body('tagIds')
+    .optional()
+    .isArray()
+    .withMessage('TagIds deve ser um array de IDs')
+    .custom((value) => {
+      if (!Array.isArray(value)) return true;
+      return value.every(item => Number.isInteger(item) && item > 0);
+    })
+    .withMessage('TagIds deve conter apenas números inteiros positivos'),
 ];
 
 export const updateTransactionValidator = [
@@ -53,4 +62,13 @@ export const updateTransactionValidator = [
     .optional()
     .isInt()
     .withMessage('O ID da conta deve ser um número inteiro'),
+  body('tagIds')
+    .optional()
+    .isArray()
+    .withMessage('TagIds deve ser um array de IDs')
+    .custom((value) => {
+      if (!Array.isArray(value)) return true;
+      return value.every(item => Number.isInteger(item) && item > 0);
+    })
+    .withMessage('TagIds deve conter apenas números inteiros positivos'),
 ];
