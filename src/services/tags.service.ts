@@ -26,7 +26,7 @@ export class TagsService {
       });
   
       return tag;
-    } catch (error) {
+    } catch (error: any) {
       // Tratando erro de unique constraint (nome+userId)
       if (error.code === 'P2002') {
         throw new AppError('Tag com este nome já existe', 400);
@@ -68,13 +68,29 @@ export class TagsService {
   }
 
   async updateTag(id: number, userId: number, data: UpdateTagData) {
+    // Primeiro verifica se a tag existe e pertence ao usuário
+    const existingTag = await prisma.tag.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (!existingTag) {
+      throw new AppError('Tag não encontrada', 404);
+    }
+
     try {
-      const tag = await prisma.tag.update({
+      const tag = await prisma.tag.updateMany({
         where: { 
           id,
-          userId 
+          userId
         },
         data,
+      });
+  
+      const updatedTag = await prisma.tag.findFirst({
+        where: { id },
         select: {
           id: true,
           name: true,
@@ -83,11 +99,8 @@ export class TagsService {
         },
       });
   
-      return tag;
-    } catch (error) {
-      if (error.code === 'P2025') {
-        throw new AppError('Tag não encontrada', 404);
-      }
+      return updatedTag;
+    } catch (error: any) {
       if (error.code === 'P2002') {
         throw new AppError('Tag com este nome já existe', 400);
       }
@@ -96,17 +109,26 @@ export class TagsService {
   }
 
   async deleteTag(id: number, userId: number) {
+    // Primeiro verifica se a tag existe e pertence ao usuário
+    const existingTag = await prisma.tag.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (!existingTag) {
+      throw new AppError('Tag não encontrada', 404);
+    }
+
     try {
-      await prisma.tag.delete({
+      await prisma.tag.deleteMany({
         where: { 
           id,
           userId
         },
       });
-    } catch (error) {
-      if (error.code === 'P2025') {
-        throw new AppError('Tag não encontrada', 404);
-      }
+    } catch (error: any) {
       throw error;
     }
   }
