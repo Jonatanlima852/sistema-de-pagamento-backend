@@ -6,10 +6,14 @@ const transactionsService = new TransactionsService();
 export class TransactionsController {
   async createTransaction(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const { notify, ...rest } = req.body;
+
       const transaction = await transactionsService.createTransaction({
-        ...req.body,
+        ...rest,
+        notify: notify ?? false,
         userId: req.user!.id
       });
+
       res.status(201).json(transaction);
     } catch (error) {
       next(error);
@@ -39,10 +43,15 @@ export class TransactionsController {
 
   async updateTransaction(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const { notify, ...rest } = req.body;
+
       const transaction = await transactionsService.updateTransaction(
         parseInt(req.params.id),
         req.user!.id,
-        req.body
+        {
+          ...rest,
+          notify: notify ?? false
+        }
       );
       res.json(transaction);
     } catch (error) {

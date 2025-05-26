@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '../utils/AppError';
 
-
 const prisma = new PrismaClient();
 
 interface CreateTransactionData {
@@ -10,6 +9,7 @@ interface CreateTransactionData {
   date: Date;
   type: 'INCOME' | 'EXPENSE';
   isRecurring: boolean;
+  notify?: boolean;
   categoryId: number;
   accountId: number;
   userId: number;
@@ -22,6 +22,7 @@ interface UpdateTransactionData {
   date?: Date;
   type?: 'INCOME' | 'EXPENSE';
   isRecurring?: boolean;
+  notify?: boolean;
   categoryId?: number;
   accountId?: number;
   tagIds?: number[];
