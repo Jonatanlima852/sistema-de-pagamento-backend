@@ -17,7 +17,7 @@ export class MailService {
       to,
       subject,
       html,
-      // attachments // ← descomentar no futuro
+      // attachments // descomentar no futuro
     });
   }
 

@@ -62,7 +62,7 @@ export class UserService {
     const validPassword = await bcrypt.compare(data.password, user.password);
 
     if (!validPassword) {
-      throw new AppError('Credenciais inválidas', 401);
+      throw new AppError('Senha incorreta', 401);
     }
 
     const token = jwt.sign(
