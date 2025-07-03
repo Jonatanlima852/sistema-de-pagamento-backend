@@ -111,9 +111,17 @@ export class TransactionsService {
     };
   }
 
-  async getTransactions(userId: number) {
+  async getTransactions(userId: number, startDate?: string, endDate?: string) {
     const transactions = await prisma.transaction.findMany({
-      where: { userId },
+      where: {
+        userId,
+        ...(startDate && endDate ? {
+          date: {
+            gte: new Date(startDate),
+            lte: new Date(endDate)
+          }
+        } : {})
+      },
       select: {
         id: true,
         description: true,

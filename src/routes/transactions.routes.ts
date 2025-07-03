@@ -44,4 +44,9 @@ router.get(
   transactionsController.getSummary.bind(transactionsController)
 );
 
+router.post(
+  '/export', 
+  transactionsController.exportTransactionsReport.bind(transactionsController)
+);
+
 export default router;
